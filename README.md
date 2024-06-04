@@ -53,3 +53,47 @@ If you want to learn more about building native executables, please consult http
 - Camel MLLP ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/mllp.html)): Communicate with external systems using the MLLP protocol
 - Camel Kafka ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/kafka.html)): Sent and receive messages to/from an Apache Kafka broker
 - Camel Netty ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/netty.html)): Socket level networking using TCP or UDP with Netty 4.x
+
+
+
+## Deployment on OpenShift
+1. Deploy Kafka on OCP
+- Install AMQ Streams Operator
+
+
+Operators > Installed Operators
+
+
+- 
+- Deploy a Kafka cluster
+- 
+  Goto Kafka > Create Kafka
+
+- Deploy a Kafka topic
+
+Goto Kafka > Create Kafka Topic
+
+Create my-topic & test
+
+
+
+2. Create S2I build / deployment
+
+Developer Perspective
++Add
+Import from Git
+
+
+
+### workaround
+```shell script
+oc newapp registry.access.redhat.com/ubi8/openjdk-21~https://github.com/mike4263/camel-amq-poc vista
+```
+3. Edit Deployment with env variables
+
+    a. Get Bootstrap URI
+```shell script 
+bash-4.4 ~ $ oc get svc my-cluster-kafka-bootstrap
+NAME                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+my-cluster-kafka-bootstrap   ClusterIP   172.30.153.123   <none>        9091/TCP,9092/TCP,9093/TCP   85m
+```
