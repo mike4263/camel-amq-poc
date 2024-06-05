@@ -105,10 +105,22 @@ If everything worked properly, you should see the following in the logs
 ![img_20.png](images/img_20.png)
 
 
-If your application failed with the error: "no main manifest attribute".  Open up your `oc` client and modify your *BuildConfig* as follows:
+If your application failed with the error: 
+```
+invoking custom S2I script
+Error: Unable to access jarfile /deployments/quarkus-app/quarkus-run.jar
+```
+Open up your `oc` client and modify your *BuildConfig* as follows:
 
 ```shell
-$ oc project vista
-$ oc set env bc/vista-app S2I_SOURCE_DEPLOYMENTS_FILTER=""
-$ oc start-build bc/vista-app
+oc project vista
 ```
+
+```shell
+oc set env bc/vista-app S2I_SOURCE_DEPLOYMENTS_FILTER=""
+```
+```shell
+oc start-build bc/vista-app
+```
+
+Return to the _Topology_ view and click the circle to view the side pane.
