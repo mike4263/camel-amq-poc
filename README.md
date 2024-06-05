@@ -63,7 +63,7 @@ Enter the URL: https://github.com/mike4263/camel-amq-poc.git
 
 It should auto detect the Builder Image
 
-_NOTE: OpenShift 4.13 and older may specify a builder image that does not work properly with quarkus. ([bug](https://github.com/jboss-container-images/openjdk/pull/358))_
+_NOTE: OpenShift 4.13 and older may specify a builder image that does not work properly with quarkus. ([bug](https://github.com/jboss-container-images/openjdk/pull/358))_ 
 ![img_3.png](images/img_3.png)
 
 Create a new _VistA_ application group
@@ -87,6 +87,7 @@ Scroll down to the bottom.  Click _Deployment_ and enter the environment variabl
 Click _Create_
 
 Click on the lower left circle to watch the build process
+
 ![img_5.png](images/img_5.png)
 
 The build will take a couple minutes.  After the build is complete, click _Topology_ on the left to return to the topology overview.
@@ -104,5 +105,10 @@ If everything worked properly, you should see the following in the logs
 ![img_20.png](images/img_20.png)
 
 
+If your application failed with the error: "no main manifest attribute".  Open up your `oc` client and modify your *BuildConfig* as follows:
 
-
+```shell
+$ oc project vista
+$ oc set env bc/vista-app S2I_SOURCE_DEPLOYMENTS_FILTER=""
+$ oc start-build bc/vista-app
+```

@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+echo "invoking custom S2I script"
+java -XX:MaxRAMPercentage=80.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -cp .  -jar /deployments/quarkus-app/quarkus-run.jar
