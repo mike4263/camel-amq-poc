@@ -1,99 +1,108 @@
 # camel-amq-poc
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Installation on OpenShift
 
-## Running the application in dev mode
+_This assumes that the **Red Hat Streams for Apache Kafka** operator is already installed_
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
-```
+Go to the Administrator perspective
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+![img.png](images/img.png)
 
-## Packaging and running the application
+Select the Operators
 
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/camel-amq-poc-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- Camel Core ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/core.html)): Camel core functionality and basic Camel languages: Constant, ExchangeProperty, Header, Ref, Simple and Tokenize
-- Camel MLLP ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/mllp.html)): Communicate with external systems using the MLLP protocol
-- Camel Kafka ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/kafka.html)): Sent and receive messages to/from an Apache Kafka broker
-- Camel Netty ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/netty.html)): Socket level networking using TCP or UDP with Netty 4.x
+![img_6.png](images/img_6.png)
 
 
+Click Kafka
+![img_7.png](images/img_7.png)
 
-## Deployment on OpenShift
-1. Deploy Kafka on OCP
-- Install AMQ Streams Operator
+Deploy a Kafka cluster
 
+Select _Current namespaces only_
+![img_8.png](images/img_8.png)
 
-Operators > Installed Operators
+Then "Create Kafka"
+![img_9.png](images/img_9.png)
 
+Keep all the settings as default and click "Create" on the bottom
 
-- 
-- Deploy a Kafka cluster
-- 
-  Goto Kafka > Create Kafka
+This will take a couple minutes to properly initialize
 
-- Deploy a Kafka topic
-
-Goto Kafka > Create Kafka Topic
-
-Create my-topic & test
+![img_10.png](images/img_10.png)
 
 
+Scroll to the right and click _Kafka Topic_ 
 
-2. Create S2I build / deployment
-
-Developer Perspective
-+Add
-Import from Git
+![img_11.png](images/img_11.png)
 
 
+Click the _Create KafkaTopic_ button
 
-### workaround
-```shell script
-oc newapp registry.access.redhat.com/ubi8/openjdk-21~https://github.com/mike4263/camel-amq-poc vista
-```
-3. Edit Deployment with env variables
+![img_12.png](images/img_12.png)
 
-    a. Get Bootstrap URI
-```shell script 
-bash-4.4 ~ $ oc get svc my-cluster-kafka-bootstrap
-NAME                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-my-cluster-kafka-bootstrap   ClusterIP   172.30.153.123   <none>        9091/TCP,9092/TCP,9093/TCP   85m
-```
+Keep all settings as default and click _Create_ at bottom
+
+Return to the _Developer_ perspective
+
+![img_13.png](images/img_13.png)
+
+
+Click _+Add_ button
+
+![img_14.png](images/img_14.png)
+
+
+Select _Import from Git_
+
+![img_15.png](images/img_15.png)
+
+
+Enter the URL: https://github.com/mike4263/camel-amq-poc.git
+![img.png](images/gitUrl.png)
+
+It should auto detect the Builder Image
+
+_NOTE: OpenShift 4.13 and older may specify a builder image that does not work properly with quarkus. ([bug](https://github.com/jboss-container-images/openjdk/pull/358))_
+![img_3.png](images/img_3.png)
+
+Create a new _VistA_ application group
+![img_16.png](images/img_16.png)
+
+
+Enter Vista as the of the application group and _vista-app_ as the name of the resources:
+
+![img_17.png](images/img_17.png)
+
+Select "Deployment" as the Resource Type
+![img_2.png](images/img_2.png)
+
+Scroll down to the bottom.  Click _Deployment_ and enter the environment variables:
+
+| Env Variable | Name |
+|--------------|------|
+| BOOTSTRAP_URL             | my-cluster-kafka-bootstrap:9092     |
+| QUARKUS_PROFILE             | prod     |
+
+Click _Create_
+
+Click on the lower left circle to watch the build process
+![img_5.png](images/img_5.png)
+
+The build will take a couple minutes.  After the build is complete, click _Topology_ on the left to return to the topology overview.
+
+Click the blue ring to pull up the side pane.
+
+![img.png](images/img_18.png)
+
+Click _View logs_
+
+![img_1.png](images/img_19.png)
+
+If everything worked properly, you should see the following in the logs
+
+![img_20.png](images/img_20.png)
+
+
+
+
