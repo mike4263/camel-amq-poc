@@ -197,7 +197,7 @@
                 </repository>
                 <repository>
                     <id>my-custom-repo</id>
-                    <url>https://nexus.appdev.hcaocp.com/repository/maven-central/</url>
+                    <url>https://nexus.hcaocp.com/repository/maven-central/</url>
                 </repository>
             </repositories>
             <pluginRepositories>
