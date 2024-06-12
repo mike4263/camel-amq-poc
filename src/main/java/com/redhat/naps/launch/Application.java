@@ -53,24 +53,27 @@ public class Application extends RouteBuilder {
                 .handled(true)
                 .end()  ;
 
+        /*
         // produces messages to kafka
         from("timer:foo?period={{timer.period}}&delay={{timer.delay}}")
                 .routeId("FromTimer2Kafka")
                 .setBody(simple(getHL7Message()))
+                .setHeader("origin", simple("timer"))
                 .to("kafka:{{kafka.topic.name}}")
                 .log("Message correctly sent to the topic!");
 
         // kafka consumer
         from("kafka:{{kafka.topic.name}}")
                 .routeId("FromKafka2MLLP")
-                .log("Received message from topic")
+                .log("Received message from topic - origin: ${header.origin}")
                 .to("mllp://8088")
                 .log("Received ACK from MLLP");
 
+         */
 
         from("mllp://8088?autoAck=true")
                 .routeId("MLLP Consumer")
-                .log("MLLP Received message ")
+                /*
                 .unmarshal(hl7)
                 .validate(messageConforms())
                 .bean(ProcessMessage.class, "parseMessage")
@@ -80,7 +83,8 @@ public class Application extends RouteBuilder {
                     .otherwise()
                         .throwException(MllpInvalidMessageException.class, "Message type not supported")
                     .end()
-                .transform(ack(AcknowledgmentCode.AA))
-                .end();
+                 */
+                .to("log:com.redhat.naps.launch?level=DEBUG&showAll=true&multiline=true")
+                .to("kafka:my-topic");
     }
 }
